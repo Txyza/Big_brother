@@ -52,14 +52,14 @@ def get_users():
     return json.dumps(partuser)
 
 
-@app.route("/users/<int:user_id>", methods=['GET'])
-def get_user(user_id):
+@app.route("/users/<int:id_user>")
+def get_user(id_user):
     users = db.get_users()
     for l in users:
-        if user_id == l.get("id"):
+        if id_user == l.get("id"):
             return json.dumps(l), 200
-        else:
-            abort(404)
+    else:
+        abort(404)
 
 
 @app.route("/add_user", methods=['POST'])
