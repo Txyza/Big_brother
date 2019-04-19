@@ -4,7 +4,7 @@ from werkzeug.contrib.cache import SimpleCache
 from server_routes import recogniser
 
 def sql_execute(sql_give):
-    conn = psycopg2.connect(dbname='bigbrother', user='test_user', password='qwerty', host='localhost')
+    conn = psycopg2.connect(dbname='posgres', user='postgres', password='postgres', host='localhost')
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     answer = None
 
