@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.contrib.cache import SimpleCache
-
+from server_routes import recogniser
 
 def sql_execute(sql_give):
     conn = psycopg2.connect(dbname='bigbrother', user='test_user', password='qwerty', host='localhost')
@@ -34,7 +34,9 @@ def get_users():
 
 def add_user(user):
     # user.update({model: model.get_model(user.get(["photo"]))})
-    sql = "INSERT INTO users2(name,surname,photo,status) VALUES ('{name}','{surname}','{photo}','unknown')".format_map(user)
+    encode = recogniser.make_string_of_encoding(recogniser.encode_image(user.get("photo")))
+    user.update({"encoding":encode})
+    sql = "INSERT INTO users2(name,surname,photo,status,encoding) VALUES ('{name}','{surname}','{photo}','unknown','{encoding}')".format(**user)
     sql_execute(sql)
     print(sql)
 
