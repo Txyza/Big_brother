@@ -42,7 +42,7 @@ def get_user(user_id):
 	for l in users:
 		if user_id == l.get("id"):
 			return json.dumps(l), 200
-		else: abort(400)
+		else: abort(404)
 
 @app.route("/add_user", methods=['POST'])
 def add_user():
