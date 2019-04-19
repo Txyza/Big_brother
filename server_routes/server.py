@@ -5,11 +5,10 @@ app = Flask(__name__)
 from flask import Flask, request, abort
 
 import json
-import server.db as db
 from datetime import datetime
 from multiprocessing import Process
-import server.db as db
-import server.recogniser as recogniser
+from server import db
+from server.recogniser import recogniser
 
 # {ip:status}
 

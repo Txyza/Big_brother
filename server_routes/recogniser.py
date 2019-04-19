@@ -1,7 +1,7 @@
 import face_recognition
 import numpy as np
 
-import server.db as db
+from server import db
 
 
 def find_faces(analised_frame):
