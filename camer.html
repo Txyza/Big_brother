@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Главная</title>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
+	<!--<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>-->
+	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">-->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		var app = angular.module("TensorCam");
+		app.controller("TensorControllerCam", function($scope, $http){
+			var TC = this;
+			TC.listForCam = [];
+			TC.loadCams = function(){
+				$http
+					.get('/getUsers')
+					.success(function (result) {
+						TC.dbForCam = result;
+					})
+					.error(function (error){
+						alert("Error"+error);
+					});
+			}
+		});
+	</script>
+</head>
+<body ng-app = "TensorCam" ng-controller="TensorControllerCam as tcam">
+	<div class="jumbotron text-center">
+	  <h1>Добро пожаловать на СБИС</h1> 
+	</div>
+	<div class="container">
+	  <div class="row">
+	    <div class="col-sm-4">
+	      <button class="btn btn-lg btn-block btn-primary" onclick="location.href='index.html'">Список сотрудников</button>
+	    </div>
+	    <div class="col-sm-4">	
+	      <button class="btn btn-lg btn-block btn-primary" onclick="location.href='Ссылка на map.html'">Карта</button>
+	    </div>
+	    <div class="col-sm-4">
+	      <button class="btn btn-lg btn-block btn-primary" onclick="location.href='camer.html'">Камеры</button>
+	    </div>
+	  </div>
+	</div>
+	<div class="row justify-content-center">
+		<div class="col-sm-8" >
+			<table class="table">
+				<thead>
+					<tr>
+				        <th>Камера</th>
+				        <th>Статус</th>
+				    </tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat='cam in tcam.listForCam'>
+				        <td>{{cam.ip}}</td>
+				        <td>{{cam.status}}</td>
+				    </tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+</html>
