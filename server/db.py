@@ -20,6 +20,7 @@ def sql_execute(sql_give):
         cursor.close()
         return answer
 
+
 # https://khashtamov.com/ru/postgresql-python-psycopg2/
 cache_user = SimpleCache()
 
@@ -32,14 +33,14 @@ def get_users():
 
 
 def add_user(user):
-   # user.update({model: model.get_model(user.get(["photo"]))})
-    sql = "INSERT INTO users2(name,surname,photo) VALUES ('{name}','{surname}','{photo}')".format(**user)
+    # user.update({model: model.get_model(user.get(["photo"]))})
+    sql = "INSERT INTO users2(name,surname,photo,status) VALUES ('{name}','{surname}','{photo}','unknown')".format_map(user)
     sql_execute(sql)
     print(sql)
 
 
 def update(id, status):
-    pass
+    sql = "UPDATE users2 SET status  = '{status}' WHERE id = {id} ;".format(status = status,id = id)
 
 
-add_user({'photo': 'urlll', 'name': "qwe","surname":"rty"})
+#add_user({'photo': 'urlll', 'name': "qwe", "surname": "rty"})
