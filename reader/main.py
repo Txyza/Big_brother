@@ -8,11 +8,12 @@ const_time_delay = 0.2
 debug = False
 queue = []
 camerasID = [0]
+caps = []
 face_cascade = cv2.CascadeClassifier(os.path.dirname(os.path.abspath(__file__)) + '/cascades/haarcascade_frontalface_default.xml')
 
 
 def get_face_frame():
-    buf = copy.deepcopy(queue[0])
+    buf = queue[0]
     queue.remove(queue[0])
     return buf
 
@@ -23,8 +24,7 @@ def append_faces(faces):
 
 
 def get_frame(cameraID):
-    cap = cv2.VideoCapture(cameraID)
-    return cap.read()[1]
+    return caps[cameraID].read()[1]
 
 
 def get_highlighted_frame(cameraID):
@@ -63,7 +63,13 @@ def size_crop(x1, y1, x2, y2, frame_w, frame_h):
     return y1, y2, x1, x2
 
 
+def create_caps():
+    for cameraID in camerasID:
+        caps.append(cv2.VideoCapture(cameraID))
+
+
 def start():
+    create_caps()
     while(True):
         delay = len(queue) * const_time_delay
         time.sleep(delay)
@@ -75,6 +81,7 @@ def start():
 
 
 if debug:
+    create_caps()
     for cameraID in camerasID:
         frame = get_frame(cameraID)
         faces = find_faces(frame)
