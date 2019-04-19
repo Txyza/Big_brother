@@ -7,6 +7,15 @@ cursor = conn.cursor(cursor_factory=RealDictCursor)
 
 cursor.execute("SELECT * FROM user2")
 for line in cursor:
-	print(line)
+    print(line)
 cursor.close()
 conn.close()
+
+def getAllUsers():
+    pass
+
+def getUserFromId(id):
+    pass
+def addUser(user):
+    pass
+
