@@ -1,6 +1,6 @@
 from flask import Flask, request, abort
 import json
-import db
+import server.db as db
 from datetime import datetime
 from multiprocessing import Process
 
@@ -25,9 +25,9 @@ def transport():
 	try:
 		Process(target = findFace, args = (request.files["photo"],)).start()
 	except:
-		return json.dumps(changeStatus(None)), 413
+		return "", 413
 	else:
-   		return json.dumps(changeStatus(request.files["photo"])), 200
+		return "", 200
 
 
 @app.route("/users", methods=['GET'])
@@ -46,15 +46,15 @@ def get_user(user_id):
 
 @app.route("/add_user", methods=['POST'])
 def add_user():
-    if not request.json:
-        abort(400)
-    user = json.load(request.json)
+	if not request.json:
+		abort(400)
+	user = json.load(request.json)
 	db.add_user(user)
-    return "", 200
+	return "", 200
 
 @app.route("/get_cameras_ip", methods=['GET'])
 def get_cm_ips():
-    return json.dumps(camers_ips), 200
+	return json.dumps(camers_ips), 200
 
 if(__name__ == '__main__'):
-    app.run()
+	app.run()
