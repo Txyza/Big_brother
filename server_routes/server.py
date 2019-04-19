@@ -66,7 +66,7 @@ def get_user(user_id):
 def add_user():
     if not request.json:
         return "", 400
-    user = json.load(request.json)
+    user = request.json
     db.add_user(user)
     return "", 200
 

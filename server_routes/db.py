@@ -35,9 +35,16 @@ def get_users():
     return cache_user
 
 
+def download_file_profile(url):
+    import wget
+    files = wget.download(url)
+    return files
+
+
 def add_user(user):
-    encode = recogniser.make_string_of_encoding(recogniser.encode_image(user.get("photo")))
-    user.update({"encoding":encode})
+    file = download_file_profile(user.get('photo'))
+    encode = recogniser.make_string_of_encoding(file)
+    user.update({"encoding": encode})
     sql = """
     INSERT INTO users2(name,surname,photo,status,encoding) 
     VALUES ('{name}','{surname}','{photo}','unknown','{encoding}')""".format(**user)
