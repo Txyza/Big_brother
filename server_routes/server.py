@@ -41,18 +41,15 @@ def transport():
 def get_users():
     users = db.get_users()
     partuser = []
-
-
     for i in users:
         partuser.append({
-            'photo':i.get("photo"),
-            'id':i.get("id"),
-            "name":i.get("name"),
-            "surname":i.get("surname"),
-            "status":i.get("status")
-
+            'photo': i.get("photo"),
+            'id': i.get("id"),
+            "name": i.get("name"),
+            "surname": i.get("surname"),
+            "status": i.get("status")
         })
-    return partuser
+    return json.dumps(partuser)
 
 
 @app.route("/users/<int:user_id>", methods=['GET'])
@@ -80,4 +77,4 @@ def get_cm_ips():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, thread=True)
+    app.run(host='0.0.0.0', port=8080, threaded=True)
