@@ -6,7 +6,7 @@ import db
 
 def find_faces(analised_frame):
     users = db.get_users()
-    users = tuple((user.encoding, user.id) for user in users)
+    users = tuple((make_encoding_from_string(user.encoding), user.id) for user in users)
 
     for face_encoding in analised_frame:
         matches = face_recognition.compare_faces((u[0] for u in users), face_encoding)
