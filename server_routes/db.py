@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.contrib.cache import SimpleCache
 from server_routes import recogniser
+from base64 import b64encode
 
 
 def sql_execute(sql_give):
@@ -35,15 +36,10 @@ def get_users():
     return cache_user
 
 
-def download_file_profile(url):
-    import wget
-    files = wget.download(url)
-    return files
-
-
 def add_user(user):
-    file = download_file_profile(user.get('photo'))
-    encode = recogniser.make_string_of_encoding(file)
+    encode = recogniser.encode_image(user.get('photo'))
+    user.get('photo').seek(0)
+    user['photo'] = b64encode(user.get('photo').read()).decode()
     user.update({"encoding": encode})
     sql = """
     INSERT INTO users2(name,surname,photo,status,encoding) 

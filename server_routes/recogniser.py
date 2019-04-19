@@ -33,7 +33,7 @@ def make_encoding_from_string(string):
 
 
 def make_string_of_encoding(encoding):
-    return ' '.join(encoding)
+    return ' '.join(map(str, list(encoding)))
 
 
 def encode_image(image_path):

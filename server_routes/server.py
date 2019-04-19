@@ -64,9 +64,10 @@ def get_user(user_id):
 
 @app.route("/add_user", methods=['POST'])
 def add_user():
-    if not request.json:
-        return "", 400
-    user = request.json
+    user = {'photo': request.files['photo'],
+            'surname': request.files['surname'].read().decode(),
+            'name': request.files['name'].read().decode()
+            }
     db.add_user(user)
     return "", 200
 
