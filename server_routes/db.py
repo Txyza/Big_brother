@@ -27,7 +27,7 @@ cache_user = SimpleCache()
 
 def get_users():
     global cache_user
-    if cache_user is None:
+    if cache_user.get_dict() == {}:
         cache_user = sql_execute("SELECT * FROM users2")
     return cache_user
 

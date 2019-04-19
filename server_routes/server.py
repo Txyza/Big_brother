@@ -7,8 +7,7 @@ from flask import Flask, request, abort
 import json
 from datetime import datetime
 from multiprocessing import Process
-from server import db
-from server.recogniser import recogniser
+from server_routes import db, recogniser
 
 # {ip:status}
 
@@ -39,7 +38,7 @@ def transport():
         return "", 200
 
 
-@app.route("/users", methods=['GET'])
+@app.route("/getusers", methods=['GET'])
 def get_users():
     users = db.get_users()
     partuser = []
