@@ -1,5 +1,5 @@
-# IDE
-.idea
+
+.idea/*
 .vscode
 
 # Byte-compiled / optimized / DLL files
