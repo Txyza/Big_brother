@@ -1,62 +1,90 @@
-import cv2 as cv
-import os
 import time
+import copy
+import cv2
+import os
+
+size = 5
+const_time_delay = 0.2
+debug = False
+queue = []
+camerasID = [0]
+face_cascade = cv2.CascadeClassifier(os.path.dirname(os.path.abspath(__file__)) + '/cascades/haarcascade_frontalface_default.xml')
 
 
-framerate = 10
-offset = 50
-face_recognizer_path = 'cascades/haarcascade_frontalface_default.xml'
+def get_face_frame():
+    buf = copy.deepcopy(queue[0])
+    queue.remove(queue[0])
+    return buf
 
 
-def cutFace(image, x, y, w, h):
-    """Cut face rectangle from image"""
-    y1, y2, x1, x2 = y, y + h, x, x + w
-    if y - offset >= 0:
-        y1 = y - offset
-    if y + h + offset < image.shape[1]:
-        y2 = y + h + offset
-    if x - offset >= 0:
-        x1 = x - offset
-    if x + w + offset < image.shape[0]:
-        x2 = x + w + offset
-    return image[y1:y2, x1:x2]
+def append_faces(faces):
+    for face in faces:
+        queue.append(face)
 
 
-def sendFrame(frame):
-    """Sends frame to server to recognize"""
-    # TODO: transfer
-    cv.imshow("Ya nashel tebya haha", frame)
-    cv.waitKey(1)
-    pass
+def get_frame(cameraID):
+    cap = cv2.VideoCapture(cameraID)
+    return cap.read()[1]
 
 
-if __name__ == "__main__":
-    # Get main camera
-    cap = cv.VideoCapture(0)
-    # Initialize face recognizer
-    face_cascade = cv.CascadeClassifier(os.path.dirname(os.path.abspath(__file__)) + '/' + face_recognizer_path)
+def get_highlighted_frame(cameraID):
+    frame = get_frame(cameraID)
+    return highlight_faces(frame, find_faces(frame))
 
-    # Framerate stuff
-    start = 0
-    delay = 1.0 / framerate
 
-    while (True):
-        ret, image = cap.read()
-        assert ret, 'Failed to get frame from capture'
+def find_faces(frame):
+    return face_cascade.detectMultiScale(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), 1.3, 5)
 
-        grayscale = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(grayscale, 1.3, 5)
-        for (x, y, w, h) in faces:
-            face = image
-            cv.rectangle(face, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            face = cutFace(face, x, y, w, h)
-            sendFrame(face)
 
-        # Sleep 'till the next frame
-        now = time.time()
-        if (now - start > delay):
-            start = now
-        else:
-            time.sleep(delay - (now - start))
+def crop_faces(frame, faces):
+    list_of_faces = []
+    for (x, y, w, h) in faces:
+        y1, y2, x1, x2 = size_crop(x, y, x + w, y + h, frame.shape[0], frame.shape[1])
+        list_of_faces.append((frame[y1:y2, x1:x2], cameraID))
+    return list_of_faces
 
-    cv.destroyAllWindows()
+
+def highlight_faces(frame, faces):
+    new_frame = copy.deepcopy(frame)
+    for (x, y, w, h) in faces:
+        cv2.rectangle(new_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+    return new_frame
+
+
+def size_crop(x1, y1, x2, y2, frame_w, frame_h):
+    if y1 - size >= 0:
+        y1 -= size
+    if y2 + size <= frame_w:
+        y2 += size
+    if x1 - size >= 0:
+        x1 -= size
+    if x2 + size <= frame_h:
+        x2 += size
+    return y1, y2, x1, x2
+
+
+def start():
+    while(True):
+        delay = len(queue) * const_time_delay
+        time.sleep(delay)
+        for cameraID in camerasID:
+            frame = get_frame(cameraID)
+            faces = find_faces(frame)
+            croped_faces = crop_faces(frame, faces)
+            append_faces(croped_faces)
+
+
+if debug:
+    for cameraID in camerasID:
+        frame = get_frame(cameraID)
+        faces = find_faces(frame)
+        croped_faces = crop_faces(frame, faces)
+        highlighted_frame = highlight_faces(frame, faces)
+        count = 0
+        for face_to_save in croped_faces:
+            cv2.imwrite(os.path.dirname(os.path.abspath(__file__)) + '/' + str(count) + '.png', face_to_save[0])
+            count += 1
+        cv2.imshow('img', highlighted_frame)
+        cv2.waitKey(0)
+
+cv2.destroyAllWindows()
