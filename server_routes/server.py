@@ -52,7 +52,7 @@ def get_users():
             "status":i.get("status")
 
         })
-    return json.dump((usersShort))
+    return partuser
 
 
 @app.route("/users/<int:user_id>", methods=['GET'])
