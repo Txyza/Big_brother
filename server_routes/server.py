@@ -5,13 +5,12 @@ app = Flask(__name__)
 from flask import Flask, request, abort
 
 import json
-from datetime import datetime
 from multiprocessing import Process
 from server_routes import db, recogniser
 
 # {ip:status}
 
-camers_ips = []
+camers_ips = {}
 
 
 def findFace(file, status):  # returns : idOfHuman, idOfCamera
@@ -80,5 +79,5 @@ def get_cm_ips():
     return json.dumps(camers_ips), 200
 
 
-if (__name__ == '__main__'):
-    app.run()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080, thread=True)
