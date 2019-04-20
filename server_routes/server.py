@@ -45,10 +45,7 @@ def findFace(file, status):
 @app.route('/getInfo/<status>', methods=["GET"])
 def getInfo(status):
     try:
-        answer = []
-        for i in list(filter(lambda x: x["status"] == status, db.get_users())):
-            answer.append({"name":i.get("name"),"surname":i.get('surname'),"status": i.get("status")})
-        return json.dumps(answer), 200, {'Access-Control-Allow-Origin': '*'}
+        return json.dumps(db.get_info(status)), 200, {'Access-Control-Allow-Origin': '*'}
     except:
         abort(404)
 

@@ -28,6 +28,14 @@ def sql_execute(sql_give):
 cache_user = SimpleCache()
 
 
+def get_info(status):
+    return sql_execute("""
+    select name, surname, status
+    from users2
+    where status = '{status}'
+    """.format(status=status))
+
+
 def get_users():
 
     return sql_execute("""
