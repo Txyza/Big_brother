@@ -23,7 +23,9 @@ def find_faces(analised_frame):
 
 def get_encoding_of_image(path):
     image = face_recognition.load_image_file(path)
-    encoding = face_recognition.face_encodings(image)[0]
+    encoding = face_recognition.face_encodings(image)
+    if encoding:
+        encoding = encoding[0]
     return encoding
 
 
