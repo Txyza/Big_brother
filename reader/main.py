@@ -2,7 +2,7 @@ from multiprocessing import Process, Queue
 import argparse
 from reader import cameras
 from reader import server
-from reader import flask
+from reader import _flask
 
 
 if __name__ == "__main__":
@@ -20,6 +20,6 @@ if __name__ == "__main__":
     cameras_process.start()
     sender_process.start()
 
-    flask_process = Process(target=flask.StartWebServer, args=(frames,))
+    flask_process = Process(target=_flask.StartWebServer, args=(frames,))
     flask_process.start()
     flask_process.join()
