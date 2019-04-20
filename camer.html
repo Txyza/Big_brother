@@ -29,12 +29,17 @@
 						TC.listForCam = result;
 					})
 					.error(function (error){
-						alert("Error"+error);
+						<!--alert("Error"+error);-->
 					});
 			};
 			window.getStream = function(container){
 				window.open('http://'+container.id+':5000/getStream', '_blank');
 			}
+			window.setInterval(
+					function updateDiv1(){
+						TC.loadCams();
+					}, 5000
+			);
 			TC.loadCams();
 		});
 	</script>
