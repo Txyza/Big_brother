@@ -1,7 +1,6 @@
-import json
-from multiprocessing import Lock, Condition
 import requests
 import time
+
 
 def get_last_frame(camera, frames):
     ans = b''
@@ -16,17 +15,26 @@ def get_last_frame(camera, frames):
 
 
 def send_frame_to_server(frame):
-        data = {'photo': frame[0]}
-        result = requests.post('http://192.168.1.50:8080' + '/transport', files=data)
+    data = {'photo': frame[0]}
+    try:
+        result = requests.post(server_ip + '/transport', files=data)
         if result.status_code == 413:
             time.sleep(5)
         print(result)
-        pass
+    except Exception as e:
+        print(str(e))
 
-def send_hello():
-    requests.get('http://192.168.1.50:8080' + '/register/peregovorka')
 
-def parse_faces(faces):
+def send_hello(name):
+    requests.get(server_ip + '/register/' + name)
+
+
+def start(faces, ip, name):
+    global server_ip
+    server_ip = ip
+
+    send_hello(name)
+
     while True:
         send_frame_to_server(faces.get())
         time.sleep(0.2)
