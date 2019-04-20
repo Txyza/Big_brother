@@ -54,7 +54,7 @@ def get_users():
             "surname": i.get("surname"),
             "status": i.get("status")
         })
-    return json.dumps(partuser)
+    return json.dumps(partuser), 200, {'Access-Control-Allow-Origin': '*'}
 
 
 @app.route("/users/<int:id_user>")
