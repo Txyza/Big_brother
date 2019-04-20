@@ -30,4 +30,8 @@ def StartWebServer(frames, port=5000):
 
         return Response(get_stream(data), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+    @app.route("/", methods=['GET', 'POST'])
+    def index():
+        return Response(status=200)
+
     app.run("", port)

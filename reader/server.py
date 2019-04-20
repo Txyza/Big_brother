@@ -20,7 +20,7 @@ def send_frame_to_server(frame):
         result = requests.post(server_ip + '/transport', files=data)
         if result.status_code == 413:
             time.sleep(5)
-        print(result)
+        # print(result)
     except Exception as e:
         print(str(e))
 
