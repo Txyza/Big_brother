@@ -7,16 +7,22 @@ from flask import Flask, request, abort
 import json
 from multiprocessing import Process
 from server_routes import db, recogniser
-
+import os
+import random
+import string
+from datetime import datetime
 # {ip:status}
 
 camers_ips = {}
 
 
-def findFace(file, status):  # returns : idOfHuman, idOfCamera
-    with open('temp.png', 'wb') as f:
+def findFace(file, status):
+    # returns : idOfHuman, idOfCamera
+    filename = str(datetime.now())+'.png'
+    with open(filename, 'wb') as f:
         f.write(file.read())
-    id = recogniser.recognise('temp.png')
+    id = recogniser.recognise(filename)
+    os.remove(filename)
     if id != None:
         db.update(id, status)
 
@@ -76,10 +82,19 @@ def add_user():
     db.add_user(user)
     return "", 200, {'Access-Control-Allow-Origin': '*'}
 
-
-@app.route("/get_cameras_ip", methods=['GET'])
+# from ip:status make {ip:ip status:status}
+def getFrontCameraIps(cameraIp):
+    ip = tuple(camers_ips.keys())[0]
+    print(ip)
+    print(cameraIp.get(ip))
+    return {'ip': ip, 'status': cameraIp.get(ip)}
+@app.route("/get_camers_ip", methods=['GET'])
 def get_cm_ips():
-    return json.dumps(camers_ips), 200, {'Access-Control-Allow-Origin': '*'}
+    global camers_ips
+    front_camers_ips = []
+    for ip in camers_ips:
+        front_camers_ips.append({'ip': ip, 'status': camers_ips.get(ip)})
+    return json.dumps(front_camers_ips), 200, {'Access-Control-Allow-Origin': '*'}
 
 
 if __name__ == '__main__':
