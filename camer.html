@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>Главная</title>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
 	<!--<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>-->
@@ -27,15 +28,17 @@
 						alert("Error"+error);
 					});
 			}
-			TC.getStream(ip) = function(ip){
+			$scope.getStream = function(ip){
 				$http
-					.get('/getStream')
+					.post('/getStream', {"ip": ip})
 					.success(function (result) {
-						navigator.getUserMedia({video: true} function(result){
+						navigator.getUserMedia({video: true}, function(result){
 							allow.style.display = "none";
 							videoStreamUrl = window.URL.createObjectURL(stream);
 							video.src=videoStreamUrl;
-						}
+						}, function (error){
+							alert("Error"+error);
+						});
 					})
 					.error(function (error){
 						alert("Error"+error);
@@ -88,7 +91,7 @@
 				<tbody>
 					<tr ng-repeat='cam in tcam.listForCam'>
 				        <td>{{cam.ip}}</td>
-				        <td><button class="btn btn-sm btn-block btn-primary" onclick='tcam.getStream({{cam.ip}})'>{{cam.status}}</button></td>
+				        <td><button class="btn btn-sm btn-block btn-primary" onclick='getStream({{cam.ip}})'>{{cam.status}}</button></td>
 				    </tr>
 				</tbody>
 			</table>

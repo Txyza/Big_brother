@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>Главная</title>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
 	<!--<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>-->
@@ -25,9 +26,9 @@
 						alert("Error"+error);
 					});
 			}
-			TC.getUser(id) = function(id){
+			$scope.getUser = function(id){
 				$http
-					.post('/getUser' + {"id":id})
+					.post('/getUser', {"id":id})
 					.success(function (result) {
 						$scope.fullName = result.surname + ' ' + result.name;
 						$scope.image = result.image;
@@ -51,9 +52,9 @@
 	  			<h3 class="modal-title">{{status}}</h3>
 	  		</div>
 	  		<div class="modal-body">
-	  			<h3>{{surname}</h3>
+	  			<h3>{{surname}}</h3>
 		        <img src={{image}}/></br>
-		        <p>{{biography}</p>
+		        <p>{{biography}}</p>
 	  		</div>
 	  		<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -92,7 +93,7 @@
 				<tbody>
 					<tr ng-repeat='user in tc.database'>
 				        <td>{{user.id}}</td>
-				        <td><a href="#exampleModalLive"><img src={{user.image}} onclick='tc.getUser({{user.id}})' data-toggle="modal" data-target="#exampleModalLive"/></	a></td>
+				        <td><a href="#exampleModalLive"><img src="data:image/png;base64, "+{{user.image}} onclick='getUser( {{user.id}} )' data-toggle="modal" data-target="#exampleModalLive"/></a></td>
 				        <td>{{user.name}}</td>
 				        <td>{{user.surname}}</td>
 				    </tr>
