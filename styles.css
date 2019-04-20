@@ -76,7 +76,7 @@ bodybutton{
 
 h3, h3 {
     font-family: TensorFont;
-    font-size: 1.75rem;
+    font-size: 25px;
     color: black;
 }
 
@@ -145,3 +145,8 @@ body {
     width: 200px;
     height: 200px;
 }
+
+.round {
+    border-radius: 60px; /* Радиус скругления */
+    box-shadow: 0 0 7px #666; /* Параметры тени */
+   }
