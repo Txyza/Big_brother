@@ -6,14 +6,18 @@ from . import db
 
 def find_faces(analised_frame):
     users = db.get_users()
-    users = tuple((make_encoding_from_string(user.encoding), user.id) for user in users)
+    ids = []
+    user_encodings = []
+    for user in users:
+        ids.append(user.id)
+        user_encodings.append(user.encoding)
 
     for face_encoding in analised_frame:
-        matches = face_recognition.compare_faces((u[0] for u in users), face_encoding)
-        face_distances = face_recognition.face_distance((u[0] for u in users), face_encoding)
+        matches = face_recognition.compare_faces(user_encodings, face_encoding)
+        face_distances = face_recognition.face_distance(user_encodings, face_encoding)
         best_match_index = np.argmin(face_distances)
         if matches[best_match_index]:
-            found_id = users[best_match_index][1]
+            found_id = ids[best_match_index]
             return found_id
 
 
@@ -40,7 +44,7 @@ def encode_image(image_path):
     return make_string_of_encoding(get_encoding_of_image(image_path))
 
 
-def recognise(frame):
-    face_encodings = face_recognition.face_encodings(frame)
+def recognise(path):
+    face_encodings = face_recognition.face_encodings(face_recognition.load_image_file(path))
     return find_faces(face_encodings)
 
