@@ -24,11 +24,11 @@ def StartWebServer(frames, port=5000):
             else:
                 data = int(json.loads(request.data.decode('utf-8'))['idCam'])
             if not cameras.is_camera_exists(data):
-                return Response(status=404)
+                return Response(status=404),{'Access-Control-Allow-Origin': '*'}
         except:
-            return Response(status=418)
+            return Response(status=418), {'Access-Control-Allow-Origin': '*'}
 
-        return Response(get_stream(data), mimetype='multipart/x-mixed-replace; boundary=frame')
+        return Response(get_stream(data), mimetype='multipart/x-mixed-replace; boundary=frame',headers={'Access-Control-Allow-Origin': '*'})
 
     @app.route("/", methods=['GET', 'POST'])
     def index():
