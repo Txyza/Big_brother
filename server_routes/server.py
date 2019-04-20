@@ -1,8 +1,8 @@
 from flask import Flask, request
 
 app = Flask(__name__)
-
-from flask import Flask, request, abort
+from werkzeug import abort
+from flask import Flask, request
 
 import json
 from multiprocessing import Process
@@ -14,17 +14,26 @@ from datetime import datetime
 # {ip:status}
 
 camers_ips = {}
-
+countUnknowns = 0
 
 def findFace(file, status):
+    global countUnknowns
     # returns : idOfHuman, idOfCamera
     filename = str(datetime.now())+'.png'
     with open(filename, 'wb') as f:
         f.write(file.read())
     id = recogniser.recognise(filename)
+    if status=="@cleaning" & id!=None:
+        return id
+    elif status =="@cleaning":
+        return "end_cleaning_unknowns"
+    else:
+        if id != None:
+            db.update(id, status)
+        else:
+            db.add_user({"photo":file,"name":"Unknown","surname":str(datetime.now()),"status":status})
+
     os.remove(filename)
-    if id != None:
-        db.update(id, status)
 
 
 # def changeStatus(file):
@@ -33,6 +42,8 @@ def findFace(file, status):
 @app.route('/register/<status>', methods=["GET"])
 def register(status):
     global camers_ips
+    if status == "@cleaner":
+        status = status + "  "
     camers_ips.update({request.remote_addr: status})
     return '', 200
 
@@ -43,7 +54,7 @@ def transport():
         global camers_ips
         Process(target=findFace, args=(request.files["photo"], camers_ips.get(request.remote_addr))).start()
     except Exception as e:
-        return str(e), 413
+        abort(413)
     else:
         return "", 200
 
