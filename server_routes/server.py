@@ -62,7 +62,7 @@ def get_user(id_user):
     users = db.get_users()
     for l in users:
         if id_user == l.get("id"):
-            return json.dumps(l), 200
+            return json.dumps(l), 200, {'Access-Control-Allow-Origin': '*'}
     else:
         abort(404)
 
@@ -74,12 +74,12 @@ def add_user():
             'name': request.files['name'].read().decode()
             }
     db.add_user(user)
-    return "", 200
+    return "", 200, {'Access-Control-Allow-Origin': '*'}
 
 
 @app.route("/get_cameras_ip", methods=['GET'])
 def get_cm_ips():
-    return json.dumps(camers_ips), 200
+    return json.dumps(camers_ips), 200, {'Access-Control-Allow-Origin': '*'}
 
 
 if __name__ == '__main__':
