@@ -33,27 +33,14 @@
 					});
 			};
 			window.getStream = function(container){
-				$http
-					.post('http://'+container.id+':5000/getStream', {"idCam": container.id})
-					.success(function (result) {
-						navigator.getUserMedia({video: true}, function(result){
-							allow.style.display = "none";
-							videoStreamUrl = window.URL.createObjectURL(result);
-							video.src=videoStreamUrl;
-						}, function (error){
-							alert("Error"+error);
-						});
-					})
-					.error(function (error){
-						alert("Error"+error);
-					});
+				window.open('http://'+container.id+':5000/getStream', '_blank');
 			}
 			TC.loadCams();
 		});
 	</script>
 </head>
 <body ng-app = "TensorCam" ng-controller="TensorControllerCam as tcam">
-	<div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
+	<!--<div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	  	<div class="modal-content">
 	  		<div class="modal-header">
@@ -67,7 +54,7 @@
 			</div>
 	  	</div>
 	  </div>
-	</div>
+	</div>-->
 	<div class="jumbotron text-center">
 		<object type="image/svg+xml" class="logo" data="logo.svg" width="150" height="150"  >
 		  Your browser does not support SVG

@@ -14,18 +14,49 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="main.css">
     <meta charset="UTF-8">
-    <title>Calculator</title>
-    <script src="map.js"></script>
+    <title>Карта</title>
+    <!--<script src="map.js"></script>-->
+	<script type="text/javascript">
+		var app = angular.module("TensorMap", []);
+		app.controller("TensorControllerMap", function($scope, $http){
+			var TC = this;
+			TC.info = [];
+			window.getInfo = function (container) {
+				$http
+					.get('http://192.168.1.50:8080/getInfo/'+container.id)
+					.success(function (result){
+						TC.info = result;
+						$scope.status = result[0].status;
+					})
+					.error(function (error){
+						alert("Error"+error);
+					});
+			}
+		});
+	</script>
 </head>
-<body>
+<body ng-app="TensorMap" ng-controller="TensorControllerMap as tmap">
     <div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	  	<div class="modal-content">
 	  		<div class="modal-header">
-	  			<h3 class="modal-title">Видео</h3>
+	  			<h3 class="modal-title">{{status}}</h3>
 	  		</div>
 	  		<div class="modal-body">
-	  			<section class="video" ng-video id="video"/>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Имя</th>
+							<th>Фамилия</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat='map in tmap.info'>
+							<td>{{map.name}}</td>
+							<td>{{map.surname}}</td>
+						</tr>
+					</tbody>
+				</table>
 	  		</div>
 	  		<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -55,12 +86,11 @@
 	</div>
 </bodybutton>
 
-
     <p>
         <map id="rooms" name="rooms">
-            <a href="#exampleModalLive"><area id="peregovorka" shape="rect" coords="95,0,310,95" data-toggle="modal" data-target="#exampleModal" onclick="funcRoomID(id) "></a>
-            <a href="#exampleModalLive"><area id="lobby" shape="rect" coords="290,140,440,322" data-toggle="modal" data-target="#exampleModal" onclick="funcRoomID(id)"></a>
-            <a href="#exampleModalLive"><area id="kitchen" shape="rect" coords="0,240,195,320" data-toggle="modal" data-target="#exampleModal" onclick="funcRoomID(id)"></a>
+            <a href="#exampleModalLive"><area id="peregovorka" shape="rect" coords="95,0,310,95" data-toggle="modal" data-target="#exampleModalLive" onclick="getInfo(this) "></a>
+            <a href="#exampleModalLive"><area id="lobby" shape="rect" coords="290,140,440,322" data-toggle="modal" data-target="#exampleModalLive" onclick="getInfo(this)"></a>
+            <a href="#exampleModalLive"><area id="kitchen" shape="rect" coords="0,240,195,320" data-toggle="modal" data-target="#exampleModalLive" onclick="getInfo(this)"></a>
         </map>
     </p>
 
