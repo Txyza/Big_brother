@@ -28,7 +28,8 @@ def StartWebServer(frames, port=5000):
         except:
             return Response(status=418)
 
-        return Response(get_stream(data), mimetype='multipart/x-mixed-replace; boundary=frame')
+        return Response(get_stream(data), mimetype='multipart/x-mixed-replace; boundary=frame',
+                        headers={'Access-Control-Allow-Origin': '*'})
 
     @app.route("/", methods=['GET', 'POST'])
     def index():
