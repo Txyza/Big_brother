@@ -34,10 +34,10 @@ def get_users():
 
 def cleaning(user):
     id = server.findFace(user.get("photo"), "@cleaning")
-    while id is not None:
+    while id!="end_cleaning_unknowns":
         sql = """DELETE FROM postgres WHERE id = '{id}'""".format(id)
         id = server.findFace(user.get("photo"),"@cleaning")
-    
+
 
 def add_user(user):
     encode = recogniser.encode_image(user.get('photo'))
