@@ -11,7 +11,7 @@ def sql_execute(sql_give):
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     answer = None
 
-    print(sql_give)
+    # print(sql_give)
     cursor.execute(sql_give)
     conn.commit()
     try:
@@ -30,7 +30,11 @@ cache_user = SimpleCache()
 
 def get_users():
 
-    return sql_execute("SELECT * FROM users2")
+    return sql_execute("""
+    SELECT * 
+      , (select date from history h where h.id = u.id order by date desc limit 1) as date
+    FROM users2 u
+    """)
 
 
 def add_user(user):
@@ -47,7 +51,7 @@ def add_user(user):
 
 
 def sql_execute_history(sql):
-    conn = psycopg2.connect(dbname='history', user='postgres', password='postgres', host='localhost')
+    conn = psycopg2.connect(dbname='postgres', user='postgres', password='postgres', host='localhost')
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     answer = None
     try:
@@ -63,15 +67,21 @@ def sql_execute_history(sql):
 def add_history(id,status):
     sql = '''
         select status
-        from table t
+        from history t
         where id = '{id}'
-        order by dt
+        order by date desc
         limit 1
-    '''.format(id = id)
-    if status != sql_execute_history(sql):
+    '''.format(id=id)
+    # print(sql_execute(sql))
+    status_old = sql_execute(sql)
+    print(id, status, status_old)
+    if not status_old or (status != status_old[0].get('status')):
         sql = """INSERT INTO history(id,status,date)
                  VALUES ('{id}','{status}','{date}')""".format(id = id,status = status,date = str(datetime.now()))
-        sql_execute_history(sql)
+        # print(sql)
+        sql_execute(sql)
+
+
 def update(id, status):
     add_history(id,status)
     sql = "UPDATE users2 SET status  = '{status}' WHERE id = {id} ;".format(status=status, id=id)

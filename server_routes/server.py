@@ -42,6 +42,16 @@ def findFace(file, status):
 # def changeStatus(file):
 # 	fnd = findFace(file)
 # 	return {fnd[0] : {place(fnd[1]):str(datetime.now())}}
+@app.route('/getInfo/<status>', methods=["GET"])
+def getInfo(status):
+    try:
+        answer = []
+        for i in list(filter(lambda x: x["status"] == status, db.get_users())):
+            answer.append({"name":i.get("name"),"surname":i.get('surname'),"status": i.get("status")})
+        return json.dumps(answer), 200, {'Access-Control-Allow-Origin': '*'}
+    except:
+        abort(404)
+
 @app.route('/register/<status>', methods=["GET"])
 def register(status):
     global camers_ips
@@ -72,7 +82,8 @@ def get_users():
             'id': i.get("id"),
             "name": i.get("name"),
             "surname": i.get("surname"),
-            "status": i.get("status")
+            "status": i.get("status"),
+            "date": i.get("date")
         })
     return json.dumps(partuser), 200, {'Access-Control-Allow-Origin': '*'}
 
