@@ -8,11 +8,12 @@
 	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">-->
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
-		var app = angular.module("TensorAuto");
+		var app = angular.module("TensorAuto", []);
 		app.controller("TensorControllerAuto", function($scope, $http){
 		    $scope.addPhoto = function(){
                 var fd = new FormData();
@@ -32,9 +33,9 @@
                     }
                 }
 				$http
-					.post('/addUser', data)
+					.post('http://192.168.1.50:8080/addUser', data)
 					.success(function (result) {
-                        $http.get("/index");
+                        $http.get("http://192.168.1.50:8080/index.html");
 					})
 					.error(function (error){
 						alert("Error"+error);
@@ -46,17 +47,20 @@
 </head>
 <body ng-app = "Tensor" ng-controller="TensorController as tc">
     <div class="jumbotron text-center">
-	  <h1>Добро пожаловать на СБИС</h1>
+        <object type="image/svg+xml" class="logo" data="logo.svg" width="150" height="150"  >
+		  Your browser does not support SVG
+		</object>
+	  <h1>СБИС. Большой брат</h1>
 	</div>
 	<div class="row justify-content-center">
-        <div class="col-sm-4 ">
+        <div class="col-sm-4 " >
             <p class="text-primary">Фамилия</p>
             <input type="text" class="center-block" ng-model="surname"/></br>
             <p class="text-primary">Имя</p>
             <input type="text" ng-model="name"/></br>
             <p class="text-primary">Фото</p>
             <input type="file" ng-model="photo" onchange="addPhoto($event)"/>
-            <button class="btn" onclick="addUser()">Войти</button>
+            <button class="btn" onclick="addUser()">Добавить</button>
         </div>
     </div>
 </body>

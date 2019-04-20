@@ -8,29 +8,29 @@
 	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">-->
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="styles.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/controllers/VideoController.js"></script>
 	<script type="text/javascript">
 		var video = document.getElementById('video');
-		var app = angular.module("TensorCam");
+		var app = angular.module("TensorCam", []);
 		app.controller("TensorControllerCam", function($scope, $http){
 			var TC = this;
 			TC.listForCam = [];
 			TC.loadCams = function(){
 				$http
-					.get('/getIps')
-					.success(function (result) {
-						TC.dbForCam = result;
+					.get('http://192.168.1.50:8080/get_camers_ip')
+					.success(function (result){
+						TC.listForCam = result;
 					})
 					.error(function (error){
 						alert("Error"+error);
 					});
-			}
+			};
 			$scope.getStream = function(ip){
 				$http
-					.post('/getStream', {"ip": ip})
+					.get('http://'+ip+':5000/getStream')
 					.success(function (result) {
 						navigator.getUserMedia({video: true}, function(result){
 							allow.style.display = "none";
@@ -44,6 +44,7 @@
 						alert("Error"+error);
 					});
 			}
+			TC.loadCams();
 		});
 	</script>
 </head>
@@ -64,7 +65,10 @@
 	  </div>
 	</div>
 	<div class="jumbotron text-center">
-	  <h1>Добро пожаловать на СБИС</h1> 
+		<object type="image/svg+xml" class="logo" data="logo.svg" width="150" height="150"  >
+		  Your browser does not support SVG
+		</object>
+	  <h1>СБИС. Большой брат</h1>
 	</div>
 	<div class="container">
 	  <div class="row">
@@ -90,8 +94,8 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat='cam in tcam.listForCam'>
-				        <td>{{cam.ip}}</td>
-				        <td><button class="btn btn-sm btn-block btn-primary" onclick='getStream({{cam.ip}})'>{{cam.status}}</button></td>
+						<td><a href="#exampleModalLive"><button id='{{cam.ip}}' class="btn btn-sm btn-block btn-primary" onclick='getStream({{cam.ip}})' data-toggle="modal"  data-target="#exampleModalLive">Посмотреть stream</button></a></td>
+				        <td>{{cam.status}}</td>
 				    </tr>
 				</tbody>
 			</table>
