@@ -14,7 +14,9 @@ camers_ips = {}
 
 
 def findFace(file, status):  # returns : idOfHuman, idOfCamera
-    id = recogniser.recognise(recogniser.get_encoding_of_image(file))
+    with open('temp.png', 'wb') as f:
+        f.write(file.read())
+    id = recogniser.recognise('temp.png')
     if id != None:
         db.update(id, status)
 
@@ -24,15 +26,18 @@ def findFace(file, status):  # returns : idOfHuman, idOfCamera
 # 	return {fnd[0] : {place(fnd[1]):str(datetime.now())}}
 @app.route('/register/<status>', methods=["GET"])
 def register(status):
-    camers_ips.update([{request.remote_addr: status}])
+    global camers_ips
+    camers_ips.update({request.remote_addr: status})
+    return '', 200
 
 
 @app.route('/transport', methods=["GET", 'POST'])
 def transport():
     try:
-        Process(target=findFace, args=(request.files["photo"], camers_ips.get([request.remote_addr]))).start()
-    except:
-        return "", 413
+        global camers_ips
+        Process(target=findFace, args=(request.files["photo"], camers_ips.get(request.remote_addr))).start()
+    except Exception as e:
+        return str(e), 413
     else:
         return "", 200
 

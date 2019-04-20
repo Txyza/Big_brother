@@ -9,8 +9,8 @@ def find_faces(analised_frame):
     ids = []
     user_encodings = []
     for user in users:
-        ids.append(user.id)
-        user_encodings.append(user.encoding)
+        ids.append(user.get('id'))
+        user_encodings.append(make_encoding_from_string(user.get('encoding')))
 
     for face_encoding in analised_frame:
         matches = face_recognition.compare_faces(user_encodings, face_encoding)
@@ -33,7 +33,7 @@ def collect_encodings(f_names):
 
 
 def make_encoding_from_string(string):
-    return np.ndarray(map(float, string.split()))
+    return np.array(list(map(float, string.split())))
 
 
 def make_string_of_encoding(encoding):
