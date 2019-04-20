@@ -3,7 +3,7 @@ from flask import Flask, request
 app = Flask(__name__)
 from werkzeug import abort
 from flask import Flask, request
-
+import urllib.request
 import json
 from multiprocessing import Process
 from server_routes import db, recogniser
@@ -11,10 +11,19 @@ import os
 import random
 import string
 from datetime import datetime
+from time import sleep
 # {ip:status}
 
 camers_ips = {}
 countUnknowns = 0
+def check_camers():
+    global camers_ips
+    while True:
+        for i in camers_ips.keys():
+            if urllib.request.urlopen('https://'+i).getcode()!=200:
+                camers_ips.pop(i,None)
+        sleep(10)
+Process(target=check_camers)
 
 def findFace(file, status):
     global countUnknowns
