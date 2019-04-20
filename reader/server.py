@@ -1,29 +1,32 @@
-from threading import Lock, Condition
+import json
+from multiprocessing import Lock, Condition
+import requests
+import time
+
+def get_last_frame(camera, frames):
+    ans = b''
+    try:
+        frame, curr_cam = frames.get()
+        if curr_cam == camera:
+            ans = frame
+    finally:
+        pass
+
+    return ans
 
 
-class Server:
-    def __init__(self):
-        # Thread synchronization for all clients
-        self._mutex = Lock()
-        self._cond = Condition(self._mutex)
-        self._last_frame = {}
+def send_frame_to_server(frame):
+        data = {'photo': frame[0]}
+        result = requests.post('http://192.168.1.50:8080' + '/transport', files=data)
+        if result.status_code == 413:
+            time.sleep(5)
+        print(result)
+        pass
 
-    def new_frame(self, camera, frame):
-        self._mutex.acquire()
-        try:
-            self._last_frame[camera] = frame
-            self._cond.notify_all()
-        finally:
-            self._mutex.release()
+def send_hello():
+    requests.get('http://192.168.1.50:8080' + '/register/peregovorka')
 
-    def get_last_frame(self, camera):
-        frame = None
-
-        self._mutex.acquire()
-        try:
-            self._cond.wait()
-            frame = self._last_frame[camera]
-        finally:
-            self._mutex.release()
-
-        return frame
+def parse_faces(faces):
+    while True:
+        send_frame_to_server(faces.get())
+        time.sleep(0.2)

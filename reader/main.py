@@ -1,40 +1,24 @@
-from flask import Flask, Response
-from flask import request
-from threading import Thread
-import json
-from .cameras import Cameras
-from .server import Server
-
-app = Flask(__name__)
-
-
-cameras = Cameras()
-server = Server()
-
-
-def frames(camera):
-    while True:
-        frame = server.get_last_frame(camera)
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-
-@app.route("/getStream", methods=['POST'])
-def video_feed():
-    try:
-        data = int(json.loads(request.data.decode('utf-8'))['idCam'])
-        if not cameras.is_camera_exists(data):
-            return Response(status=404)
-        return Response(frames(data),
-                        mimetype='multipart/x-mixed-replace; boundary=frame')
-    except:
-        return Response(status=418)
+from multiprocessing import Process, Queue, Value
+import argparse
+from reader import cameras
+from reader import server
+from reader import flask
 
 
 if __name__ == "__main__":
-    cameras.register_callback(lambda camera, frame: server.new_frame(camera, frame))
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-s", "--server", required=True, help="main server ip")
+    args = vars(ap.parse_args())
 
-    cameras_thread = Thread(target=cameras.start)
-    cameras_thread.start()
+    frames = Queue(1)
+    faces = Queue()
 
-    app.run()
+    cameras_process = Process(target=cameras.start, args=(frames,faces,))
+    sender_process = Process(target=server.parse_faces, args=(faces,))
+
+    cameras_process.start()
+    sender_process.start()
+
+    flask_process = Process(target=flask.StartWebServer, args=(frames, ))
+    flask_process.start()
+    flask_process.join()
