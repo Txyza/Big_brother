@@ -15,6 +15,9 @@
 	<script type="text/javascript">
 		var app = angular.module("Tensor", []);
 		app.controller("TensorController", function($scope, $http){
+			$scope.test = function(event){
+				debugger
+			}
 			var TC = this;
 			TC.database = [];
 			TC.loadList = function(){
@@ -27,19 +30,23 @@
 						alert("Error"+error);
 					});
 			};
-			$scope.getUser = function(id){
+			window.getUser = function(container){
 				$http
-					.post('http://192.168.1.50:8080/getUser', {"id":id})
+					.get('http://192.168.1.50:8080/users/'+container.id)
 					.success(function (result) {
-						$scope.fullName = result.surname + ' ' + result.name;
-						$scope.image = result.image;
+						$scope.surname = result.surname + ' ' + result.name;
+						$scope.photo = result.photo;
 						$scope.status = result.status;
-						$scope.biography = result.biography;
 					})
 					.error(function (error){
 						alert("Error"+error);
 					});
 			};
+			window.setInterval(
+					function updateDiv1(){
+						TC.loadList();
+					}, 5000
+			);
 			TC.loadList();
 		});
 	</script>
@@ -54,8 +61,7 @@
 	  		</div>
 	  		<div class="modal-body">
 	  			<h3>{{surname}}</h3>
-		        <img src={{image}}/></br>
-		        <p>{{biography}}</p>
+		        <img class="img" src="data:image/png;base64, {{photo}}"/></br>
 	  		</div>
 	  		<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -77,7 +83,7 @@
 	      <button class="btn btn-lg btn-block btn-primary" onclick="location.href='index.html'">Список сотрудников</button>
 	    </div>
 	    <div class="col-sm-4">	
-	      <button class="btn btn-lg btn-block btn-primary" onclick="location.href='Ссылка на map.html'">Карта</button>
+	      <button class="btn btn-lg btn-block btn-primary" onclick="location.href='map.html'">Карта</button>
 	    </div>
 	    <div class="col-sm-4">
 	      <button class="btn btn-lg btn-block btn-primary" onclick="location.href='camer.html'">Камеры</button>
@@ -85,25 +91,23 @@
 	  </div>
 	</div>
 		</bodybutton>
-	<div class="row justify-content-center">
-		<div class="col-sm-8" >
+	<div class="row justify-content-center" >
+		<div id="here" class="col-sm-6">
 			<table class="table">
 				<thead>
 					<tr>
-				        <th>№</th>
 				        <th>Фото</th>
+						<th>Имя</th>
 				        <th>Фамилия</th>
-				        <th>Имя</th>
 				        <th>Статус</th>
 
 				    </tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat='user in tc.database'>
-				        <td>{{user.id}}</td>
-				        <td><a href="#exampleModalLive"><img src="data:image/png;base64, {{user.photo}} " width="100" height="100" onclick="getUser($index)" data-toggle="modal"  data-target="#exampleModalLive"/></a></td>
-				        <td>{{user.name}}</td>
+				        <td><a href="#exampleModalLive"><img id={{user.id}} src="data:image/png;base64, {{user.photo}} " width="150" height="150" onclick="getUser(this)" data-toggle="modal"  data-target="#exampleModalLive"/></a></td>
 				        <td>{{user.surname}}</td>
+						<td>{{user.name}}</td>
 						<td>{{user.status}}</td>
 				    </tr>
 				</tbody>

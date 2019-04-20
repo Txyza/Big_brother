@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
 	<title>Главная</title>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
 	<!--<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>-->
@@ -12,48 +12,13 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
-	<script type="text/javascript">
-		var video = document.getElementById('video');
-		var app = angular.module("TensorCam", []);
-		function testFunc(event){
-				debugger
-			}
-		app.controller("TensorControllerCam", function($scope, $http){
-			var TC = this;
-			TC.listForCam = [];
-
-			TC.loadCams = function(){
-				$http
-					.get('http://192.168.1.50:8080/get_camers_ip')
-					.success(function (result){
-						TC.listForCam = result;
-					})
-					.error(function (error){
-						alert("Error"+error);
-					});
-			};
-			window.getStream = function(container){
-				$http
-					.post('http://'+container.id+':5000/getStream', {"idCam": container.id})
-					.success(function (result) {
-						navigator.getUserMedia({video: true}, function(result){
-							allow.style.display = "none";
-							videoStreamUrl = window.URL.createObjectURL(result);
-							video.src=videoStreamUrl;
-						}, function (error){
-							alert("Error"+error);
-						});
-					})
-					.error(function (error){
-						alert("Error"+error);
-					});
-			}
-			TC.loadCams();
-		});
-	</script>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <meta charset="UTF-8">
+    <title>Calculator</title>
+    <script src="map.js"></script>
 </head>
-<body ng-app = "TensorCam" ng-controller="TensorControllerCam as tcam">
-	<div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
+<body>
+    <div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	  	<div class="modal-content">
 	  		<div class="modal-header">
@@ -68,18 +33,19 @@
 	  	</div>
 	  </div>
 	</div>
-	<div class="jumbotron text-center">
+    <div class="jumbotron text-center">
 		<object type="image/svg+xml" class="logo" data="logo.svg" width="150" height="150"  >
 		  Your browser does not support SVG
 		</object>
 	  <h1>СБИС. Большой брат</h1>
 	</div>
+	<bodybutton>
 	<div class="container">
 	  <div class="row">
 	    <div class="col-sm-4">
 	      <button class="btn btn-lg btn-block btn-primary" onclick="location.href='index.html'">Список сотрудников</button>
 	    </div>
-	    <div class="col-sm-4">	
+	    <div class="col-sm-4">
 	      <button class="btn btn-lg btn-block btn-primary" onclick="location.href='map.html'">Карта</button>
 	    </div>
 	    <div class="col-sm-4">
@@ -87,23 +53,19 @@
 	    </div>
 	  </div>
 	</div>
-	<div class="row justify-content-center">
-		<div class="col-sm-5" >
-			<table class="table">
-				<thead>
-					<tr>
-				        <th>Камера</th>
-				        <th>Статус</th>
-				    </tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat='cam in tcam.listForCam'>
-						<td><a href="#exampleModalLive"><button id={{cam.ip}} class="btn btn-sm btn-block btn-primary" onclick="getStream(this)" data-toggle="modal"  data-target="#exampleModalLive">Посмотреть stream</button></a></td>
-				        <td>{{cam.status}}</td>
-				    </tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+</bodybutton>
+
+
+    <p>
+        <map id="rooms" name="rooms">
+            <a href="#exampleModalLive"><area id="peregovorka" shape="rect" coords="95,0,310,95" data-toggle="modal" data-target="#exampleModal" onclick="funcRoomID(id) "></a>
+            <a href="#exampleModalLive"><area id="lobby" shape="rect" coords="290,140,440,322" data-toggle="modal" data-target="#exampleModal" onclick="funcRoomID(id)"></a>
+            <a href="#exampleModalLive"><area id="kitchen" shape="rect" coords="0,240,195,320" data-toggle="modal" data-target="#exampleModal" onclick="funcRoomID(id)"></a>
+        </map>
+    </p>
+
+    <div align="center" top="20%">
+        <img src="complex.png" id="rooms_img" usemap="#rooms">
+    </div>
 </body>
 </html>
