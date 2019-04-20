@@ -57,6 +57,10 @@ def start(frames, faces):
     face_cascade = cv2.CascadeClassifier(os.path.dirname(os.path.abspath(__file__)) + '/' + FACE_RECOGNIZER_PATH)
     caps = [cv2.VideoCapture(i) for i in CAMERAS_ID]
 
+    for cap in caps:
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+
     # Framerate stuff
     last_processed_frame = 0
     last_saved_frame = 0
