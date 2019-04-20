@@ -1,6 +1,7 @@
 import json
 
-from flask import Flask, Response
+from flask import Flask
+from flask import Response
 from flask import request
 from reader import cameras, server
 from multiprocessing import Queue
