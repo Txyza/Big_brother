@@ -32,27 +32,16 @@ def get_users():
 
     return sql_execute("SELECT * FROM users2")
 
-def cleaning(user):
-    id = server.findFace(user.get("photo"), "@cleaning")
-    while id!="end_cleaning_unknowns":
-        sql = """DELETE FROM postgres WHERE id = '{id}'""".format(id)
-        id = server.findFace(user.get("photo"),"@cleaning")
-
 
 def add_user(user):
     encode = recogniser.encode_image(user.get('photo'))
     user.get('photo').seek(0)
     user['photo'] = b64encode(user.get('photo').read()).decode()
     user.update({"encoding": encode})
-    if user.get("name") != "Unknown":
-        cleaning(user)
-        sql = """
-           INSERT INTO users2(name,surname,photo,status,encoding) 
-           VALUES ('{name}','{surname}','{photo}','unknown','{encoding}')""".format(**user)
-    else:
-        sql = """
-        INSERT INTO users2(name,surname,photo,status,encoding) 
-        VALUES ('{name}','{surname}','{photo}','{status}','{encoding}')""".format(**user)
+
+    sql = """
+    INSERT INTO users2(name,surname,photo,status,encoding) 
+    VALUES ('{name}','{surname}','{photo}','{status}','{encoding}')""".format(**user)
     sql_execute(sql)
     print(sql)
 

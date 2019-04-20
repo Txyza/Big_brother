@@ -23,15 +23,9 @@ def findFace(file, status):
     with open(filename, 'wb') as f:
         f.write(file.read())
     id = recogniser.recognise(filename)
-    if status=="@cleaning" & id!=None:
-        return id
-    elif status =="@cleaning":
-        return "end_cleaning_unknowns"
-    else:
-        if id != None:
-            db.update(id, status)
-        else:
-            db.add_user({"photo":file,"name":"Unknown","surname":str(datetime.now()),"status":status})
+
+    if id != None:
+        db.update(id, status)
 
     os.remove(filename)
 
