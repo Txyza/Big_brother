@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
 	<title>Главная</title>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.min.js"></script>
 	<!--<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>-->
@@ -12,56 +12,51 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <meta charset="UTF-8">
+    <title>Карта</title>
+    <!--<script src="map.js"></script>-->
 	<script type="text/javascript">
-		var app = angular.module("Tensor", []);
-		app.controller("TensorController", function($scope, $http){
-			$scope.test = function(event){
-				debugger
-			}
+		var app = angular.module("TensorMap", []);
+		app.controller("TensorControllerMap", function($scope, $http){
 			var TC = this;
-			TC.database = [];
-			TC.loadList = function(){
+			TC.info = [];
+			window.getInfo = function (container) {
 				$http
-					.get('http://192.168.1.50:8080/getusers')
+					.get('http://192.168.1.50:8080/getInfo/'+container.id)
 					.success(function (result){
-						TC.database = result;
+						TC.info = result;
+						$scope.status = result[0].status;
 					})
 					.error(function (error){
 						<!--alert("Error"+error);-->
 					});
-			};
-			window.getUser = function(container){
-				$http
-					.get('http://192.168.1.50:8080/users/'+container.id)
-					.success(function (result) {
-						$scope.surname = result.surname + ' ' + result.name;
-						$scope.photo = result.photo;
-						$scope.status = result.status;
-					})
-					.error(function (error){
-						<!--alert("Error"+error);-->;
-					});
-			};
-			window.setInterval(
-					function updateDiv1(){
-						TC.loadList();
-					}, 5000
-			);
-			TC.loadList();
+			}
 		});
 	</script>
 </head>
-<body ng-app = "Tensor" ng-controller="TensorController as tc">
-	<!-- Модальное окно -->
-	<div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
+<body ng-app="TensorMap" ng-controller="TensorControllerMap as tmap">
+    <div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	  	<div class="modal-content">
 	  		<div class="modal-header">
 	  			<h3 class="modal-title">{{status}}</h3>
 	  		</div>
 	  		<div class="modal-body">
-	  			<h3>{{surname}}</h3>
-		        <img class="img" src="data:image/png;base64, {{photo}}"/></br>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Имя</th>
+							<th>Фамилия</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat='map in tmap.info'>
+							<td>{{map.name}}</td>
+							<td>{{map.surname}}</td>
+						</tr>
+					</tbody>
+				</table>
 	  		</div>
 	  		<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -69,12 +64,11 @@
 	  	</div>
 	  </div>
 	</div>
-	<!-- Конец модального -->
-	<div class="jumbotron text-center">
+    <div class="jumbotron text-center">
 		<object type="image/svg+xml" class="logo" data="logo.svg" width="150" height="150"  >
 		  Your browser does not support SVG
 		</object>
-	  <h1><b>СБИС. Большой брат</b></h1>
+		<h1><b>СБИС. Большой брат</b></h1>
 	</div>
 	<bodybutton>
 	<div class="container">
@@ -82,7 +76,7 @@
 	    <div class="col-sm-4">
 			<button class="btn btn-lg btn-block btn-primary" onclick="location.href='index.html'"><b>Список сотрудников</b></button>
 	    </div>
-	    <div class="col-sm-4">	
+	    <div class="col-sm-4">
 			<button class="btn btn-lg btn-block btn-primary" onclick="location.href='map.html'"><b>Карта</b></button>
 	    </div>
 	    <div class="col-sm-4">
@@ -90,30 +84,18 @@
 	    </div>
 	  </div>
 	</div>
-		</bodybutton>
-	<div class="row justify-content-center" >
-		<div id="here" class="col-sm-6">
-			<table class="table">
-				<thead>
-					<tr>
-				        <th>Фото</th>
-						<th>Имя</th>
-				        <th>Фамилия</th>
-				        <th>Статус</th>
-						<th>Последний раз замечен</th>
-				    </tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat='user in tc.database'>
-				        <td><a href="#exampleModalLive"><img id={{user.id}} class="round" src="data:image/png;base64, {{user.photo}} " width="150" height="150" onclick="getUser(this)" data-toggle="modal"  data-target="#exampleModalLive"/></a></td>
-				        <td>{{user.surname}}</td>
-						<td>{{user.name}}</td>
-						<td>{{user.status}}</td>
-						<td>{{user.date}}</td>
-				    </tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+</bodybutton>
+
+    <p>
+        <map id="rooms" name="rooms">
+            <a href="#exampleModalLive"><area id="Переговорка" shape="rect" coords="95,0,310,95" data-toggle="modal" data-target="#exampleModalLive" onclick="getInfo(this) "></a>
+            <a href="#exampleModalLive"><area id="Лобби" shape="rect" coords="290,140,440,322" data-toggle="modal" data-target="#exampleModalLive" onclick="getInfo(this)"></a>
+            <a href="#exampleModalLive"><area id="Кухня" shape="rect" coords="0,240,195,320" data-toggle="modal" data-target="#exampleModalLive" onclick="getInfo(this)"></a>
+        </map>
+    </p>
+
+    <div align="center" top="20%">
+        <img src="complex.png" id="rooms_img" usemap="#rooms">
+    </div>
 </body>
 </html>
