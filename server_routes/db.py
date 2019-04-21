@@ -83,7 +83,7 @@ def add_history(id,status):
     # print(sql_execute(sql))
     status_old = sql_execute(sql)
     print(id, status, status_old)
-    if not status_old or (status != status_old[0].get('status')):
+    if not status_old or (status != status_old[0].get('status') and status != 'None'):
         sql = """INSERT INTO history(id,status,date)
                  VALUES ('{id}','{status}','{date}')""".format(id = id,status = status,date = str(datetime.now()))
         # print(sql)
