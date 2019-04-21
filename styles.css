@@ -150,3 +150,6 @@ body {
     border-radius: 60px; /* Радиус скругления */
     box-shadow: 0 0 7px #666; /* Параметры тени */
    }
+.search {
+    width: 1000px;
+}
