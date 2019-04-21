@@ -21,8 +21,10 @@
 			var TC = this;
 			TC.database = [];
 			TC.loadList = function(){
+				var text = document.getElementById("us").value;
+				if (text == "") text = "0";
 				$http
-					.get('http://192.168.1.50:8080/getusers')
+					.get('http://192.168.1.50:8080/getusers/'+text)
 					.success(function (result){
 						TC.database = result;
 					})
@@ -37,6 +39,11 @@
 						$scope.surname = result.surname + ' ' + result.name;
 						$scope.photo = result.photo;
 						$scope.status = result.status;
+						$scope.one = result.one;
+						$scope.two = result.two;
+						$scope.three = result.three;
+						$scope.four = result.four;
+						$scope.five = result.five;
 					})
 					.error(function (error){
 						<!--alert("Error"+error);-->;
@@ -61,7 +68,17 @@
 	  		</div>
 	  		<div class="modal-body">
 	  			<h3>{{surname}}</h3>
-		        <img class="img" src="data:image/png;base64, {{photo}}"/></br>
+				<div><img class="img" src="data:image/png;base64, {{photo}}"/></br></div>
+		        <div class="table">
+					<thead></thead>
+					<tbody>
+						<td>{{one}}}</td>
+						<td>{{two}}}</td>
+						<td>{{three}}}</td>
+						<td>{{four}}}</td>
+						<td>{{five}}}</td>
+					</tbody>
+				</div>
 	  		</div>
 	  		<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -91,14 +108,21 @@
 	  </div>
 	</div>
 		</bodybutton>
+	<div class="offset-sm-4 col-sm-6">
+		<h3>Поиск</h3>
+		<form ng-submit = "tc.loadList()">
+			<input id="us" type="text" size="50"/>
+			<input type="submit"/>
+		</form>
+	</div>
 	<div class="row justify-content-center" >
 		<div id="here" class="col-sm-6">
 			<table class="table">
 				<thead>
 					<tr>
 				        <th>Фото</th>
+						<th>Фамилия</th>
 						<th>Имя</th>
-				        <th>Фамилия</th>
 				        <th>Статус</th>
 						<th>Последний раз замечен</th>
 				    </tr>
