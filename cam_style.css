@@ -1,0 +1,37 @@
+.jumbotron.text-center{
+    background-color: rgba(128, 128, 128, 0.37);
+}
+h1 {
+    font-family: TensorFont,Tahoma,Geneva,sans-serif;
+    color: black;
+    font-weight: bold;
+}
+.btn-primary {
+    font-family: TensorFont;
+    color: black;
+    background-color: white;
+    border: white;
+    border-bottom: cornflowerblue;
+    border: 3px solid white;
+}
+.logo {
+    position:absolute;
+    top:10px;
+    left:100px;
+}
+.btn-primary:hover{
+    font-family: TensorFont;
+    background-color: white;
+    border-color: white;
+    border-bottom: 3px solid cornflowerblue;
+    color: black;
+}
+.table thead th {
+    font-family: TensorFont;
+    vertical-align: bottom;
+    border-bottom: 2px solid rgba(128, 128, 128, 0.37);
+}
+@font-face {
+    font-family: TensorFont; /* Гарнитура шрифта */
+    src: url(TensorFont.woff2); /* Путь к файлу со шрифтом */
+   }
