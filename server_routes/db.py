@@ -42,8 +42,47 @@ def get_users():
     SELECT * 
       , (select date from history h where h.id = u.id order by date desc limit 1) as date
     FROM users2 u
+    order by id
     """)
 
+
+def get_user(id):
+
+    return sql_execute("""
+with hist as (
+  select id, array_agg(array[date::text, status::text]) dates
+  from (
+    select id, date, status
+    from history
+    where id = {id}
+    order by date
+    limit 5
+  ) n
+  group by id
+)
+    SELECT id, name, photo, surname, name, status
+      , (select dates from hist) as date
+    FROM users2 u
+    where id={id}
+    order by id
+    """.format(id=id))
+
+
+def get_find_users(name, surname):
+
+    return sql_execute("""
+    SELECT distinct * 
+      , (select date from history h where h.id = u.id order by date desc limit 1) as date
+    FROM users2 u
+    where
+      name like '{name}' || '%'
+      or name like '{surname}' || '%'
+      or surname like '{name}' || '%'
+      or surname like '{surname}' || '%'
+      or status like '{name}' || '%'
+      or status like '{surname}' || '%'
+    order by id
+    """.format(name=name, surname=surname))
 
 def add_user(user):
     encode = recogniser.encode_image(user.get('photo'))
