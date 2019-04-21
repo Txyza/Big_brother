@@ -69,19 +69,20 @@ def transport():
         return "", 200
 
 
-@app.route("/getusers", methods=['GET'])
-def get_users():
+@app.route("/getusers/<search>", methods=['GET'])
+def get_users(search):
     users = db.get_users()
     partuser = []
     for i in users:
-        partuser.append({
-            'photo': i.get("photo"),
-            'id': i.get("id"),
-            "name": i.get("name"),
-            "surname": i.get("surname"),
-            "status": i.get("status"),
-            "date": i.get("date")
-        })
+        if search in i.get("surname") or search in i.get("name"):
+            partuser.append({
+                'photo': i.get("photo"),
+                'id': i.get("id"),
+                "name": i.get("name"),
+                "surname": i.get("surname"),
+                "status": i.get("status"),
+                "date": i.get("date")
+            })
     return json.dumps(partuser), 200, {'Access-Control-Allow-Origin': '*'}
 
 

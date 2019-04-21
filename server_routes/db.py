@@ -58,19 +58,6 @@ def add_user(user):
     print(sql)
 
 
-def sql_execute_history(sql):
-    conn = psycopg2.connect(dbname='postgres', user='postgres', password='postgres', host='localhost')
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
-    answer = None
-    try:
-        answer = cursor.fetchall()
-    except:
-        pass
-    finally:
-        conn.close()
-        cursor.close()
-        return answer
-
 
 def add_history(id,status):
     sql = '''
