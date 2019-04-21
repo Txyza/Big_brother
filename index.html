@@ -39,11 +39,16 @@
 						$scope.surname = result.surname + ' ' + result.name;
 						$scope.photo = result.photo;
 						$scope.status = result.status;
-						$scope.one = result.one;
-						$scope.two = result.two;
-						$scope.three = result.three;
-						$scope.four = result.four;
-						$scope.five = result.five;
+						$scope.one = result.date[0][1];
+						$scope.two = result.date[1][1];
+						$scope.three = result.date[2][1];
+						$scope.four = result.date[3][1];
+						$scope.five = result.date[4][1];
+						$scope.s_one = result.date[0][0];
+						$scope.s_two = result.date[1][0];
+						$scope.s_three = result.date[2][0];
+						$scope.s_four = result.date[3][0];
+						$scope.s_five = result.date[4][0];
 					})
 					.error(function (error){
 						<!--alert("Error"+error);-->;
@@ -60,7 +65,7 @@
 </head>
 <body ng-app = "Tensor" ng-controller="TensorController as tc">
 	<!-- Модальное окно -->
-	<div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
+	<div id="exampleModalLive" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	  	<div class="modal-content">
 	  		<div class="modal-header">
@@ -68,16 +73,18 @@
 	  		</div>
 	  		<div class="modal-body">
 	  			<h3>{{surname}}</h3>
-				<div><img class="img" src="data:image/png;base64, {{photo}}"/></br></div>
-		        <div class="table">
-					<thead></thead>
-					<tbody>
-						<td>{{one}}</td>
-						<td>{{two}}</td>
-						<td>{{three}}</td>
-						<td>{{four}}</td>
-						<td>{{five}}</td>
-					</tbody>
+				<div class="row">
+					<div><img class="img col-sm-12" src="data:image/png;base64, {{photo}}"/></br></div>
+					<div class="table col-sm-4">
+						<thead></thead>
+						<tbody>
+						<td><font color="black"><b>{{one}}</b></br></font></td><td><font color="black">{{s_one}}</font></td>
+							<td><font color="black"><b>{{two}}</b></br></font></td><td><font color="black">{{s_two}}</font></td>
+							<td><font color="black"><b>{{three}}</b></br></font></td><td><font color="black">{{s_three}}</font></td>
+							<td><font color="black"><b>{{four}}</b></br></font></td><td><font color="black">{{s_four}}</font></td>
+							<td><font color="black"><b>{{five}}</b></br></font></td><td><font color="black">{{s_five}}</font></td>
+						</tbody>
+					</div>
 				</div>
 	  		</div>
 	  		<div class="modal-footer">
